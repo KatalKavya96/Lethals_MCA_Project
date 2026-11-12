@@ -1,0 +1,7 @@
+# simulation outputs (regenerate with: sh sim/run_all.sh)
+sim/*.out
+sim/*.vcd
+# synthesis logs
+synth/*.log
+# macOS
+.DS_Store
