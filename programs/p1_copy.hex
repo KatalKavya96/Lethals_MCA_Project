@@ -1,0 +1,21 @@
+// P1 - block copy (memory-heavy)
+// Writes 4 values to 0x00-0x03, copies them to 0x10-0x13, sends the last one to OUT.
+// Format: {op[31:28], imm[27:8], addr[7:0]}   N = 18 instructions, M = 13 touch data memory
+30000B00   // 00 LDI   0x0B
+20000000   // 01 STORE [0x00]
+30001600   // 02 LDI   0x16
+20000001   // 03 STORE [0x01]
+30002100   // 04 LDI   0x21
+20000002   // 05 STORE [0x02]
+30002C00   // 06 LDI   0x2C
+20000003   // 07 STORE [0x03]
+10000000   // 08 LOAD  [0x00]
+20000010   // 09 STORE [0x10]
+10000001   // 0A LOAD  [0x01]
+20000011   // 0B STORE [0x11]
+10000002   // 0C LOAD  [0x02]
+20000012   // 0D STORE [0x12]
+10000003   // 0E LOAD  [0x03]
+20000013   // 0F STORE [0x13]
+20000070   // 10 STORE [0x70]  -> OUT
+F0000000   // 11 HALT

@@ -1,0 +1,20 @@
+// P2 - array sum (mixed)
+// Array {5,10,15,20} at 0x00-0x03, sum stored to 0x20, read back, sent to OUT.
+// Tests back-to-back reads (LOAD, ADD, ADD, ADD) and read-after-write (STORE 0x20 then LOAD 0x20).
+// N = 16 instructions, M = 11 touch data memory
+30000500   // 00 LDI   5
+20000000   // 01 STORE [0x00]
+30000A00   // 02 LDI   10
+20000001   // 03 STORE [0x01]
+30000F00   // 04 LDI   15
+20000002   // 05 STORE [0x02]
+30001400   // 06 LDI   20
+20000003   // 07 STORE [0x03]
+10000000   // 08 LOAD  [0x00]
+40000001   // 09 ADD   [0x01]
+40000002   // 0A ADD   [0x02]
+40000003   // 0B ADD   [0x03]
+20000020   // 0C STORE [0x20]   sum = 50 (0x32)
+10000020   // 0D LOAD  [0x20]   read-after-write
+20000070   // 0E STORE [0x70]  -> OUT
+F0000000   // 0F HALT
