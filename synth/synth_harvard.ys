@@ -1,0 +1,8 @@
+# Generic (technology-independent) synthesis of the Harvard design.
+# Run from the repository root:  yosys -s synth/synth_harvard.ys
+# This gives logic-cell counts only. It is NOT a timing analysis and gives no Fmax.
+read_verilog rtl/common/pc.v rtl/common/instr_rom.v rtl/common/data_ram.v rtl/common/out_reg.v rtl/common/rw_control.v
+read_verilog rtl/harvard/harvard_decoder.v rtl/harvard/harvard_ctrl.v rtl/harvard/harvard_top.v
+chparam -set PROGRAM "programs/p2_sum.hex" harvard_top
+synth -top harvard_top
+stat

@@ -1,0 +1,19 @@
+[dumpfile] "sim/shared.vcd"
+[timestart] 0
+@28
+tb_shared.clk
+tb_shared.rst
+tb_shared.s1.state
+@22
+tb_shared.s1.pc_val[7:0]
+tb_shared.s1.m_addr[7:0]
+tb_shared.s1.mem_rdata[31:0]
+@28
+tb_shared.s1.mem_rd
+tb_shared.s1.mem_wr
+@22
+tb_shared.s1.m_wdata[31:0]
+tb_shared.s1.acc[31:0]
+tb_shared.s1.out[31:0]
+@28
+tb_shared.s1.done

@@ -1,0 +1,19 @@
+[dumpfile] "sim/harvard.vcd"
+[timestart] 0
+@28
+tb_harvard.clk
+tb_harvard.rst
+@22
+tb_harvard.h1.i_addr[7:0]
+tb_harvard.h1.i_data[31:0]
+@28
+tb_harvard.h1.mem_rd
+tb_harvard.h1.mem_wr
+@22
+tb_harvard.h1.d_addr[7:0]
+tb_harvard.h1.d_wdata[31:0]
+tb_harvard.h1.d_rdata[31:0]
+tb_harvard.h1.acc[31:0]
+tb_harvard.h1.out[31:0]
+@28
+tb_harvard.h1.done

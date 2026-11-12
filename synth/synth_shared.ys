@@ -1,0 +1,7 @@
+# Generic (technology-independent) synthesis of the shared-memory baseline.
+# Run from the repository root:  yosys -s synth/synth_shared.ys
+read_verilog rtl/common/pc.v rtl/common/out_reg.v rtl/common/rw_control.v
+read_verilog rtl/shared/shared_decoder.v rtl/shared/shared_mem.v rtl/shared/shared_ctrl.v rtl/shared/shared_top.v
+chparam -set PROGRAM "programs/p2_sum.hex" shared_top
+synth -top shared_top
+stat
