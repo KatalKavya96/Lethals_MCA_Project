@@ -1,0 +1,12 @@
+\begin{tikzpicture}[>={Latex[length=2mm]},node distance=40mm,every state/.style={draw=ink,fill=fillg,minimum size=17mm,font=\small,line width=0.7pt},
+  t/.style={font=\scriptsize,align=center}]
+\node[state,initial,initial text={\scriptsize rst}] (F) {FETCH};
+\node[state,right=of F,fill=dbl] (E) {EXEC};
+\node[state,below=14mm of F,accepting,fill=white] (D) {\scriptsize done};
+\path[->,draw=ink]
+ (F) edge[bend left=22] node[t,above]{LOAD / STORE / ADD\\\textit{IR $\leftarrow$ m\_rdata}} (E)
+ (E) edge[bend left=22] node[t,below]{\textit{LOAD: ACC $\leftarrow$ m\_rdata}\\\textit{ADD: ACC $\leftarrow$ ACC + m\_rdata}\\\textit{STORE: mem[0x80+addr] $\leftarrow$ ACC}} (F)
+ (F) edge[loop above] node[t,above]{NOP / LDI\\\textit{(LDI: ACC $\leftarrow$ imm)}} (F)
+ (F) edge node[t,left]{HALT} (D);
+\node[t,right=3mm of D,align=left,text=mut] {port address = PC in FETCH,\\0x80 + IR[7:0] in EXEC;\\PC +1 at end of every\\FETCH except HALT};
+\end{tikzpicture}

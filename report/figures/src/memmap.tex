@@ -1,0 +1,20 @@
+\begin{tikzpicture}[x=1mm,y=1mm,
+  reg/.style={draw=ink,minimum width=26mm,align=center,font=\scriptsize,anchor=north west,inner sep=1pt}]
+% Harvard
+\node[font=\small\bfseries] at (13,62) {Harvard};
+\node[reg,fill=ibl,minimum height=40mm] at (-1,57) {Instruction ROM\\(separate\\address space)\\0x00--0xFF};
+\node[font=\scriptsize\bfseries] at (42,62) {};
+\node[reg,fill=dbl,minimum height=26mm] at (30,57) {Data RAM\\offset 0x00--0x6F};
+\node[reg,fill=db!45,minimum height=3mm] at (30,31) {OUT 0x70};
+\node[reg,fill=white,minimum height=11mm,text=mut] at (30,28) {unmapped 0x71--0xFF\\(write ignored, read 0)};
+\node[font=\scriptsize\color{mut}] at (12,13.5) {I-space};
+\node[font=\scriptsize\color{mut}] at (43,13.5) {D-space};
+% Shared
+\node[font=\small\bfseries] at (85,62) {Shared (one space)};
+\node[reg,fill=ibl,minimum height=20mm] at (72,57) {Program 0x00--0x7F\\(data writes blocked)};
+\node[reg,fill=dbl,minimum height=14mm] at (72,37) {Data RAM 0x80--0xEF\\(= 0x80 + offset)};
+\node[reg,fill=db!45,minimum height=3mm] at (72,23) {OUT 0xF0};
+\node[reg,fill=white,minimum height=3mm,text=mut] at (72,20) {unmapped 0xF1--0xFF};
+\draw[decorate,decoration={brace,amplitude=3pt},mut] (99,57) -- (99,37) node[midway,right,font=\scriptsize,align=left]{fetch};
+\draw[decorate,decoration={brace,amplitude=3pt},mut] (99,37) -- (99,17) node[midway,right,font=\scriptsize,align=left]{data};
+\end{tikzpicture}

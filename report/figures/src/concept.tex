@@ -1,0 +1,16 @@
+\begin{tikzpicture}[node distance=6mm]
+% von Neumann
+\node[blk,minimum width=22mm] (cpu1) {Processor /\\controller};
+\node[blk,below=12mm of cpu1,minimum width=22mm,fill=sbl] (m1) {Unified memory\\{\scriptsize instructions + data}};
+\draw[sbus,{Latex[length=2.2mm]}-{Latex[length=2.2mm]}] (cpu1) -- node[lbl,right,align=left]{one address/\\data bus} (m1);
+\node[above=2mm of cpu1,font=\small\bfseries] {(a) von Neumann (shared)};
+\node[below=1.5mm of m1,font=\scriptsize\color{mut},align=center,text width=40mm] {fetch \emph{or} data access per cycle};
+% Harvard
+\node[blk,right=40mm of cpu1,minimum width=22mm] (cpu2) {Processor /\\controller};
+\node[blk,below left=12mm and -4mm of cpu2,fill=ibl,minimum width=19mm] (im) {Instruction\\memory};
+\node[blk,below right=12mm and -4mm of cpu2,fill=dbl,minimum width=19mm] (dm) {Data\\memory};
+\draw[ibus] (im.north) -- node[lbl,left]{I-bus} (cpu2.south west);
+\draw[dbus,{Latex[length=2.2mm]}-{Latex[length=2.2mm]}] (cpu2.south east) -- node[lbl,right]{D-bus} (dm.north);
+\node[above=2mm of cpu2,font=\small\bfseries] {(b) Harvard (split)};
+\node[below=1.5mm of $(im.south)!0.5!(dm.south)$,font=\scriptsize\color{mut},align=center,text width=44mm] {fetch \emph{and} data access in the same cycle};
+\end{tikzpicture}

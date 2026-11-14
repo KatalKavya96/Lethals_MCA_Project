@@ -1,0 +1,17 @@
+\begin{tikzpicture}[node distance=8mm]
+\node[blk] (pc) {PC\\[-1pt]{\scriptsize\color{mut}pc.v, 8-bit}};
+\node[blk,right=10mm of pc,minimum width=34mm,minimum height=16mm] (ctl) {Shared controller\\[-1pt]{\scriptsize\color{mut}shared\_ctrl.v: FETCH/EXEC FSM}\\[-1pt]{\scriptsize\color{mut}IR, ACC, done}\\[-1pt]{\scriptsize\color{mut}m\_addr = PC or 0x80+offset}};
+\node[blk,right=24mm of ctl,fill=sbl,minimum height=16mm] (mem) {Shared memory (1 port)\\[-1pt]{\scriptsize\color{mut}shared\_mem.v, 256$\times$32}\\[-1pt]{\scriptsize\color{mut}0x00--0x7F program}\\[-1pt]{\scriptsize\color{mut}0x80--0xEF data}};
+\node[blk,below=10mm of ctl] (rw) {R/W control $\times$2\\[-1pt]{\scriptsize\color{mut}needs EXEC? / strobes}};
+\node[blk,below=10mm of mem] (dec) {Address decoder\\[-1pt]{\scriptsize\color{mut}shared\_decoder.v}};
+\node[blk,below=8mm of dec] (out) {OUT register\\[-1pt]{\scriptsize\color{mut}out\_reg.v, 0xF0}};
+\draw[ctl] (pc) -- node[lbl,above]{pc} (ctl);
+\draw[sbus] ([yshift=3mm]ctl.east) -- node[lbl,above]{m\_addr, m\_wdata} ([yshift=3mm]mem.west);
+\draw[sbus] ([yshift=-3mm]mem.west) -- node[lbl,below,align=center]{m\_rdata\\instr.\ \emph{or} data} ([yshift=-3mm]ctl.east);
+\draw[ctl] ([xshift=6mm]ctl.south) -- node[lbl,right]{fetch\_op, ir\_op, state} ([xshift=6mm]rw.north);
+\draw[ctl] (rw.east) -- node[lbl,above]{mem\_wr} (dec.west);
+\draw[ctl] (dec.north) -- node[lbl,right]{ram\_we} (mem.south);
+\draw[ctl] (dec.south) -- node[lbl,right]{out\_we} (out.north);
+\draw[ctl] (out.east) -- ++(7mm,0) node[lbl,above left]{out};
+\draw[ctl] ([xshift=4mm]ctl.south west) |- ++(0,-6mm) -| node[lbl,below,pos=0.25]{pc\_en} (pc.south);
+\end{tikzpicture}

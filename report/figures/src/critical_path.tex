@@ -1,0 +1,20 @@
+\begin{tikzpicture}[node distance=1.2mm,
+  c/.style={draw=ink,rounded corners=1.5pt,font=\scriptsize,minimum height=7mm,align=center,inner sep=2pt}]
+\node[font=\small\bfseries,anchor=west] at (0,0.9) {Harvard (33 levels)};
+\node[c,fill=white,anchor=west] (a1) at (0,0) {PC\\reg};
+\node[c,fill=ibl,right=of a1,minimum width=10.4mm] (a2) {ROM read\\4};
+\node[c,fill=dbl,right=of a2,minimum width=20.8mm] (a3) {RAM read mux\\8};
+\node[c,fill=fillg,right=of a3,minimum width=6mm] (a4) {sel\\1};
+\node[c,fill=fillg,right=of a4,minimum width=52mm] (a5) {32-bit add + ACC mux\\20};
+\node[c,fill=white,right=of a5] (a6) {ACC\\reg};
+\foreach \i/\j in {a1/a2,a2/a3,a3/a4,a4/a5,a5/a6} \draw[->,>={Latex[length=1.5mm]}] (\i)--(\j);
+\node[font=\small\bfseries,anchor=west] at (0,-1.1) {Shared (31 levels)};
+\node[c,fill=white,anchor=west] (b1) at (0,-2) {IR\\reg};
+\node[c,fill=sbl,right=of b1,minimum width=4mm] (b2) {addr\\mux 1};
+\node[c,fill=sbl,right=of b2,minimum width=20.8mm] (b3) {memory read mux\\8};
+\node[c,fill=fillg,right=of b3,minimum width=5.2mm] (b4) {sel\\2};
+\node[c,fill=fillg,right=of b4,minimum width=52mm] (b5) {32-bit add + ACC mux\\20};
+\node[c,fill=white,right=of b5] (b6) {ACC\\reg};
+\foreach \i/\j in {b1/b2,b2/b3,b3/b4,b4/b5,b5/b6} \draw[->,>={Latex[length=1.5mm]}] (\i)--(\j);
+\node[font=\scriptsize\color{mut},anchor=west] at (0,-2.9) {box width $\propto$ gate levels (Yosys \texttt{flatten; ltp -noff}, unit delay per cell)};
+\end{tikzpicture}

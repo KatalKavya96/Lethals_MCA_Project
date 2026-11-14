@@ -1,0 +1,18 @@
+\begin{tikzpicture}[node distance=5mm and 6mm,
+  b/.style={blk,minimum width=26mm,minimum height=8mm,font=\scriptsize},
+  d/.style={draw=ink,fill=white,diamond,aspect=2.2,font=\scriptsize,inner sep=1pt,align=center}]
+\node[b,fill=ibl] (spec) {Spec \& fairness rules};
+\node[b,below=of spec] (hex) {Programs P1--P3\\(.hex, $N$, $M$ predicted)};
+\node[b,below=of hex] (unit) {tb\_units.v\\PC, R/W control, decoders};
+\node[b,below=of unit] (sys) {tb\_harvard.v / tb\_shared.v\\same programs, same checks};
+\node[d,below=of sys] (ok) {all PASS?\\cycles $=N$, $N{+}M$?};
+\node[b,right=12mm of ok,fill=dbl] (fix) {debug with\\VCD + GTKWave};
+\node[b,below=of ok] (syn) {Yosys synthesis\\(cell count, depth)};
+\node[d,below=of syn] (ok2) {plausible?};
+\node[b,below=of ok2,fill=ibl] (rep) {results \& report};
+\foreach \i/\j in {spec/hex,hex/unit,unit/sys,sys/ok,syn/ok2} \draw[ctl] (\i)--(\j);
+\draw[ctl] (ok)--node[lbl,above]{no}(fix); \draw[ctl] (fix) |- (unit);
+\draw[ctl] (ok)--node[lbl,right]{yes}(syn);
+\draw[ctl] (ok2)--node[lbl,right]{yes}(rep);
+\draw[ctl] (ok2.east) -| node[lbl,below,pos=0.25,align=center]{no (e.g.\ ROM\\= 0 cells)} (fix.south);
+\end{tikzpicture}

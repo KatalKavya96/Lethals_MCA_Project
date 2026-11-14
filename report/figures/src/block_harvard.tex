@@ -1,0 +1,23 @@
+\begin{tikzpicture}[node distance=8mm]
+\node[blk] (pc) {PC\\[-1pt]\textnormal{\scriptsize\color{mut} pc.v, 8-bit}};
+\node[blk,right=9mm of pc,fill=ibl] (rom) {Instruction ROM\\[-1pt]{\scriptsize\color{mut}instr\_rom.v, 256$\times$32}};
+\node[blk,right=9mm of rom,minimum width=26mm,minimum height=14mm] (ctl) {Harvard controller\\[-1pt]{\scriptsize\color{mut}harvard\_ctrl.v}\\[-1pt]{\scriptsize\color{mut}decode, ACC, done}};
+\node[blk,right=24mm of ctl,fill=dbl,minimum height=14mm] (ram) {Data RAM\\[-1pt]{\scriptsize\color{mut}data\_ram.v}\\[-1pt]{\scriptsize\color{mut}offsets 0x00--0x6F}};
+\node[blk,below=10mm of ctl] (rw) {R/W control\\[-1pt]{\scriptsize\color{mut}rw\_control.v}};
+\node[blk,below=10mm of ram] (dec) {Address decoder\\[-1pt]{\scriptsize\color{mut}harvard\_decoder.v}};
+\node[blk,below=8mm of dec] (out) {OUT register\\[-1pt]{\scriptsize\color{mut}out\_reg.v, 0x70}};
+\draw[ibus] (pc) -- node[lbl,above]{i\_addr} (rom);
+\draw[ibus] (rom) -- node[lbl,above]{i\_data} (ctl);
+\draw[dbus] ([yshift=3mm]ctl.east) -- node[lbl,above]{d\_addr, d\_wdata} ([yshift=3mm]ram.west);
+\draw[dbus] ([yshift=-3mm]ram.west) -- node[lbl,below]{d\_rdata} ([yshift=-3mm]ctl.east);
+\draw[ctl] (ctl.south) -- node[lbl,right]{op, active} (rw.north);
+\draw[ctl] (rw.east) -- node[lbl,above]{mem\_wr} (dec.west);
+\draw[ctl] (dec.north) -- node[lbl,right]{ram\_we} (ram.south);
+\draw[ctl] (dec.south) -- node[lbl,right]{out\_we} (out.north);
+\draw[ctl] (out.east) -- ++(7mm,0) node[lbl,above left]{out};
+\draw[ctl] ([xshift=4mm]ctl.south west) |- ++(0,-6mm) -| node[lbl,below,pos=0.25]{pc\_en (0 on HALT)} ([yshift=-0mm]pc.south);
+\begin{scope}[on background layer]
+\node[fit=(pc)(rom),draw=ib,dashed,rounded corners,inner sep=2mm,label={[font=\scriptsize\color{ib}]above:instruction side}] {};
+\node[fit=(ram)(dec)(out),draw=db,dashed,rounded corners,inner sep=3mm,label={[font=\scriptsize\color{db}]above:data side}] {};
+\end{scope}
+\end{tikzpicture}

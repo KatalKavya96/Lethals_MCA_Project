@@ -1,3 +1,4 @@
 # Prototype demo video
 
-Link: _to be added after recording (must be 5 minutes or less)_
+Link: https://drive.google.com/drive/folders/15HMCkl4nldxteUyYbFreIv7pLNKQtCjL
+Duration: 4:51

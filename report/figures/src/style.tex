@@ -1,0 +1,14 @@
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,shapes.geometric,automata,decorations.pathreplacing}
+\definecolor{ib}{HTML}{2A78D6}\definecolor{db}{HTML}{EB6834}\definecolor{sb}{HTML}{6250D6}
+\definecolor{ink}{HTML}{222222}\definecolor{mut}{HTML}{6B6B6B}\definecolor{fillg}{HTML}{F4F4F2}
+\definecolor{ibl}{HTML}{CDE2FB}\definecolor{dbl}{HTML}{FBD9C9}\definecolor{sbl}{HTML}{E1DCF8}
+\tikzset{
+  blk/.style={draw=ink,fill=fillg,rounded corners=2pt,align=center,minimum height=9mm,minimum width=20mm,font=\small,line width=0.6pt},
+  sub/.style={font=\scriptsize\color{mut}},
+  ibus/.style={-{Latex[length=2.2mm]},draw=ib,line width=1.4pt},
+  dbus/.style={-{Latex[length=2.2mm]},draw=db,line width=1.4pt},
+  sbus/.style={-{Latex[length=2.2mm]},draw=sb,line width=1.4pt},
+  ctl/.style={-{Latex[length=1.8mm]},draw=mut,line width=0.6pt},
+  lbl/.style={font=\scriptsize,inner sep=1.5pt},
+}

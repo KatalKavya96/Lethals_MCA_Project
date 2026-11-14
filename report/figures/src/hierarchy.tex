@@ -1,0 +1,11 @@
+\begin{tikzpicture}[x=1mm,y=1mm,n/.style={draw=ink,fill=fillg,rounded corners=1pt,font=\scriptsize\ttfamily,inner sep=2pt,anchor=west}]
+\node[n,fill=ibl] (h) at (0,0) {harvard\_top};
+\foreach \m/\c [count=\i] in {pc/fillg,instr\_rom/ibl,harvard\_ctrl/fillg,rw\_control/fillg,harvard\_decoder/fillg,data\_ram/dbl,out\_reg/fillg}{
+  \node[n,fill=\c] (h\i) at (6,-\i*6) {\m}; \draw[mut] (2,-\i*6) -- (h\i.west);}
+\draw[mut] (2,-2.5) -- (2,-42);
+\node[n,fill=sbl] (s) at (40,0) {shared\_top};
+\foreach \m/\c [count=\i] in {pc/fillg,shared\_ctrl/fillg,rw\_control (fetch)/fillg,rw\_control (exec)/fillg,shared\_decoder/fillg,shared\_mem/sbl,out\_reg/fillg}{
+  \node[n,fill=\c] (s\i) at (46,-\i*6) {\m}; \draw[mut] (42,-\i*6) -- (s\i.west);}
+\draw[mut] (42,-2.5) -- (42,-42);
+\node[font=\tiny\color{mut},anchor=west] at (0,-48) {rtl/common holds pc, instr\_rom, data\_ram, out\_reg, rw\_control};
+\end{tikzpicture}

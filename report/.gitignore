@@ -1,0 +1,5 @@
+*.aux
+*.log
+*.out
+figures/src/_*
+__pycache__/

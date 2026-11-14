@@ -1,0 +1,29 @@
+\begin{tikzpicture}[node distance=7mm,
+  mux/.style={draw=ink,fill=fillg,trapezium,trapezium angle=70,shape border rotate=270,minimum width=14mm,minimum height=5mm,font=\scriptsize,inner sep=1pt},
+  reg/.style={draw=ink,fill=white,minimum width=8mm,minimum height=12mm,font=\small,line width=0.8pt}]
+\node[reg] (pc) {PC};
+\node[blk,right=8mm of pc,fill=ibl,minimum width=16mm,minimum height=14mm] (rom) {Instr.\\ROM};
+\coordinate[right=7mm of rom] (split);
+\node[blk,above right=1mm and 14mm of rom,minimum width=14mm,minimum height=7mm,font=\scriptsize] (dec) {opcode\\decode};
+\node[blk,right=24mm of rom,fill=dbl,minimum width=16mm,minimum height=14mm] (ram) {Data\\RAM};
+\node[draw=ink,fill=fillg,circle,inner sep=1pt,right=11mm of ram,yshift=-9mm,font=\small] (add) {$+$};
+\node[draw=ink,fill=fillg,minimum width=7mm,minimum height=20mm,right=24mm of ram,font=\scriptsize,align=center] (amux) {M\\U\\X};
+\node[reg,right=8mm of amux] (acc) {ACC};
+\node[circle,draw=ink,fill=fillg,inner sep=1pt,font=\scriptsize,below=2mm of pc] (inc) {$+1$};
+% fetch
+\draw[ibus] (pc) -- node[lbl,above]{i\_addr} (rom);
+\draw[ibus] (rom.east) -- (split);
+\draw[ibus] (split) |- node[lbl,above,pos=0.75]{[31:28]} (dec.west);
+\draw[dbus] (split) -- node[lbl,above]{[7:0]} (ram.west);
+\draw[ctl] (split) |- ++(0,-14mm) -| node[lbl,below,pos=0.2]{imm [27:8] (zero-ext.)} ([yshift=-7mm]amux.west);
+% data
+\draw[dbus] (ram.east) -- ++(4mm,0) coordinate(rd) -- node[lbl,above,pos=0.6]{d\_rdata} ([yshift=7mm]amux.west);
+\draw[dbus] (rd) |- (add.west);
+\draw[ctl] (add.east) -- node[lbl,above]{} ([yshift=-1mm]amux.west);
+\draw[ctl] (amux) -- (acc);
+\draw[ctl] (acc.east) -- ++(3mm,0) |- ++(0,-22mm) -| (add.south);
+\draw[dbus] (acc.north) |- ++(0,16mm) -| node[lbl,above,pos=0.25]{d\_wdata (STORE)} (ram.north);
+\draw[ctl] (dec.east) -| node[lbl,above,pos=0.3]{sel: LOAD / ADD / LDI / hold} (amux.north);
+\draw[ctl] (pc.south) -- (inc.north); \draw[ctl] (inc.west) -- ++(-3mm,0) |- ([yshift=-3mm]pc.west);
+\node[font=\scriptsize\color{mut},below=19mm of ram,align=center] {fetch, decode, data access and ACC update\\all complete inside one clock period};
+\end{tikzpicture}

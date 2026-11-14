@@ -75,5 +75,5 @@ yosys -s synth/synth_harvard.ys   # optional: generic synthesis cell counts
 
 ## Status
 
-Phase I: RTL, directed tests, cycle comparison and block diagrams done. IEEE report and demo video in progress.
+Phase I complete: RTL, directed tests, cycle comparison, block diagrams, IEEE report and demo video.
 Phase II: synchronous-read memories, FPGA timing (Fmax) on a chosen target, wider program mix.

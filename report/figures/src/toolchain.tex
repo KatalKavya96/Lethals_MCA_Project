@@ -1,0 +1,16 @@
+\begin{tikzpicture}[node distance=4mm and 7mm,
+  f/.style={draw=ink,fill=white,font=\scriptsize,minimum width=20mm,minimum height=7mm,align=center,rounded corners=1pt},
+  t/.style={blk,font=\scriptsize,minimum width=20mm,minimum height=8mm}]
+\node[f] (rtl) {rtl/*.v};
+\node[f,below=of rtl] (tb) {tb/*.v};
+\node[f,below=of tb] (hex) {programs/*.hex};
+\node[t,right=of tb,fill=ibl] (iv) {Icarus Verilog\\iverilog + vvp};
+\node[f,right=of iv,yshift=5mm] (log) {PASS/FAIL,\\cycle counts};
+\node[f,right=of iv,yshift=-6mm] (vcd) {*.vcd};
+\node[t,right=of vcd,fill=ibl] (gtk) {GTKWave /\\VCD plots};
+\node[t,below=10mm of iv,fill=dbl] (ys) {Yosys 0.33\\synth, stat, ltp};
+\node[f,right=of ys] (st) {cell counts,\\logic depth};
+\draw[ctl] (rtl.east)--(iv); \draw[ctl] (tb)--(iv); \draw[ctl] (hex.east)--(iv);
+\draw[ctl] (iv)--(log); \draw[ctl] (iv)--(vcd); \draw[ctl] (vcd)--(gtk);
+\draw[ctl] (rtl.west) -- ++(-3mm,0) |- ([yshift=-14mm]hex.south west) -| ([xshift=-6mm]ys.west) -- (ys.west); \draw[ctl] (ys)--(st);
+\end{tikzpicture}
