@@ -1,0 +1,20 @@
+
+10. Printing statistics.
+
+=== shared_top ===
+
+   Number of wires:               2557
+   Number of wire bits:           4571
+   Number of public wires:        2557
+   Number of public wire bits:    4571
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               2722
+     CCU2C                          20
+     L6MUX21                       423
+     LUT4                         1453
+     PFUMX                         612
+     TRELLIS_DPR16X4               128
+     TRELLIS_FF                     86
+

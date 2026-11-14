@@ -1,4 +1,4 @@
-# Preliminary results (Phase I)
+# Results
 
 All numbers below come from `sh sim/run_all.sh` (Icarus Verilog) and `yosys -s synth/synth_<design>.ys`
 (Yosys 0.33, generic synthesis). Re-run them on your own machine before quoting them in the report.
@@ -55,3 +55,8 @@ Simulation was correct, but Yosys applied `$readmemh` first and the loop afterwa
 contained only HALT words and was optimised to 0 cells. The loop was removed. This is a real
 simulation/synthesis mismatch and the reason the report should never quote synthesis numbers without
 checking they are plausible.
+
+## Phase II: FPGA timing (ECP5-25F, nextpnr)
+
+Full details: [phase2_fpga.md](phase2_fpga.md). Mean Fmax over 5 seeds: Harvard 55.5 MHz, shared 72.6 MHz.
+Speed-up in time: P1 1.32x, P2 1.29x, P3 0.96x. Harvard wins only when f = M/N > about 0.31.

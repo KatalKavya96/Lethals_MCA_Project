@@ -33,7 +33,7 @@ Repository: \url{https://github.com/KatalKavya96/Lethals_MCA_Project}}
 
 % ------------------------------------------------------------------
 \begin{abstract}
-A processor that keeps instructions and data in one memory behind one port can either fetch an instruction or access data in a given cycle, never both. This is the von Neumann bottleneck. A Harvard organization removes the conflict by giving instructions and data separate memories and buses. We implement a simplified Harvard memory organization in synthesizable Verilog: a program counter, an instruction ROM, a data RAM, an address decoder, read/write control, a memory-mapped output register, and a single-cycle accumulator controller. We compare it against a shared-memory baseline that runs the same six-instruction ISA, the same programs and the same data address map. The baseline is built to be fair: it spends a second cycle only on instructions that actually need the port for data. Directed testbenches check 71 conditions across unit and system level, and both designs produce identical final memory, accumulator and output values. Measured cycle counts follow the analytical model exactly: $N$ cycles for Harvard and $N+M$ for the shared design, where $M$ of the $N$ executed instructions access data memory. The resulting speed-ups are $1.72\times$, $1.69\times$ and $1.25\times$ on three programs, so the gain is $1+M/N$ and not a fixed $2\times$. Generic Yosys synthesis gives nearly equal cell counts (17\,481 vs.\ 17\,471), which we show is a consequence of the chosen memory sizes. The Harvard critical path is slightly deeper (33 vs.\ 31 gate levels) because it chains an instruction read into a data read within one cycle. We state clearly that the speed-up is a cycle-count result: maximum frequency has not yet been measured on an FPGA, and that is the main goal of Phase II.
+A processor that keeps instructions and data in one memory behind one port can either fetch an instruction or access data in a given cycle, never both. This is the von Neumann bottleneck. A Harvard organization removes the conflict by giving instructions and data separate memories and buses. We implement a simplified Harvard memory organization in synthesizable Verilog: a program counter, an instruction ROM, a data RAM, an address decoder, read/write control, a memory-mapped output register, and a single-cycle accumulator controller. We compare it against a shared-memory baseline that runs the same six-instruction ISA, the same programs and the same data address map. The baseline is built to be fair: it spends a second cycle only on instructions that actually need the port for data. Directed testbenches check 71 conditions across unit and system level, and both designs produce identical final memory, accumulator and output values. Measured cycle counts follow the analytical model exactly: $N$ cycles for Harvard and $N+M$ for the shared design, where $M$ of the $N$ executed instructions access data memory. The resulting speed-ups are $1.72\times$, $1.69\times$ and $1.25\times$ on three programs, so the gain is $1+M/N$ and not a fixed $2\times$. Generic Yosys synthesis gives nearly equal cell counts (17\,481 vs.\ 17\,471), which we show is a consequence of the chosen memory sizes. The Harvard critical path is slightly deeper (33 vs.\ 31 gate levels) because it chains an instruction read into a data read within one cycle. Place-and-route on a Lattice ECP5 FPGA (Yosys and nextpnr, five seeds) turns this into a time result: the Harvard design reaches 55.5\,MHz against 72.6\,MHz for the baseline, because it chains both memory reads in one cycle. The speed-up in execution time is therefore $1.32\times$, $1.29\times$ and $0.96\times$: Harvard wins only when more than about 31\% of instructions access data.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -301,7 +301,7 @@ Total cells                      & 17\,481 & 17\,471 \\
 \quad PC, OUT, R/W ctrl, glue    & 131     & 175 \\
 Other flip-flops (SDFFE)         & 73      & 86 \\
 Longest path (gate levels)       & 33      & 31 \\
-Maximum frequency                & \multicolumn{2}{c}{not measured (Phase II)} \\
+Maximum frequency (ECP5, Sec.~\ref{sec:fpga}) & 55.5\,MHz & 72.6\,MHz \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -323,6 +323,35 @@ We measured the longest combinational path with Yosys (\texttt{flatten; ltp -nof
 \label{fig:cp}
 \end{figure}
 
+\subsection{FPGA implementation and timing (Phase II)}\label{sec:fpga}
+We placed and routed both designs, unchanged, on a Lattice ECP5-25F (CABGA256) with Yosys~0.33 (\texttt{synth\_ecp5}) and nextpnr-ecp5~0.6, a 50\,MHz constraint and program P2. Because $f_\text{max}$ depends on placement, each design was routed with five seeds (Table~\ref{tab:fpga}). Both meet 50\,MHz. The Harvard design averages 55.5\,MHz (53.8--57.9) and the shared design 72.6\,MHz (70.0--75.2). The routed Harvard critical path is the one predicted in Sec.~\ref{sec:cp}: PC, instruction ROM (block RAM, 5.6\,ns clock-to-output), decode and address compare, data RAM read (distributed RAM), adder, accumulator. The shared design never places both memory reads in one cycle.
+
+\begin{table}[!t]
+\caption{ECP5-25F place-and-route results (program P2, 5 seeds)}
+\label{tab:fpga}
+\centering
+\begin{tabular}{@{}lrr@{}}
+\toprule
+ & Harvard & Shared \\
+\midrule
+$f_\text{max}$ mean (MHz)        & 55.5 & 72.6 \\
+$f_\text{max}$ range (MHz)       & 53.8--57.9 & 70.0--75.2 \\
+LUT4                             & 917 & 1\,453 \\
+Flip-flops                       & 73 & 86 \\
+Distributed RAM (DPR16X4)        & 64 & 128 \\
+Block RAM (DP16KD)               & 1 & 0 \\
+\midrule
+P1 time (ns), speed-up           & 324 & 427 \quad $1.32\times$ \\
+P2 time (ns), speed-up           & 288 & 372 \quad $1.29\times$ \\
+P3 time (ns), speed-up           & 288 & 276 \quad $0.96\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Execution time is cycles divided by $f_\text{max}$, so the speed-up in time is $(1+f)\cdot f_H/f_S = (1+f)/1.31$. The Harvard design is faster only when $f>0.31$. It wins on P1 and P2 by about $1.3\times$, not the $1.7\times$ that cycle counts suggest, and it loses on the compute-heavy P3.
+
+Two resource figures need care. First, the instruction ROM reads combinationally, yet it was mapped to block RAM, which reads on a clock edge: Yosys absorbed the PC register into the block RAM address register, which preserves behaviour. Second, the Harvard data RAM uses half the distributed RAM of the shared memory. The program is constant, so Yosys proves that some data addresses are never used and removes them, so the Harvard area is specific to P2. The shared memory holds a writable program and cannot be pruned. On an iCE40 HX8K, which has no distributed RAM, the Harvard design fits (2\,110 of 7\,680 logic cells) but the shared design does not (197\%), because its asynchronous $256\times32$ memory must be built from flip-flops.
+
 \subsection{A simulation/synthesis mismatch}\label{sec:mismatch}
 An early version filled the ROM with HALT words in a \texttt{for} loop before calling \sig{\$readmemh}. Icarus executes these in source order, so simulation was correct. Yosys, however, applied the file contents first and the loop afterwards. The synthesized ROM held only HALT words and was optimized to zero cells. The plausibility check in Fig.~\ref{fig:verif} caught this, and the loop was removed. This is a concrete instance of the mismatch class described in~\cite{mills}, and it is why we check every synthesis number for plausibility before reporting it.
 
@@ -330,7 +359,7 @@ An early version filled the ROM with HALT words in a \texttt{for} loop before ca
 \section{Discussion and Limitations}\label{sec:discussion}
 \textbf{Simultaneous access opportunities.} The brief asks us to analyse when separate paths help. Our answer is quantitative. A separate data path saves exactly one cycle for every instruction that accesses data memory, and nothing for any other instruction. The benefit therefore scales with $f$. Memory-heavy kernels such as copies and reductions gain about $1.7\times$, while compute-heavy code gains much less.
 
-\textbf{Speed-up is in cycles, not time.} We have not run place-and-route, so we report no maximum frequency. The 33 vs.\ 31 gate-level depth suggests that the Harvard cycle is slightly longer, and the true ratio depends on memory and adder delays on a real device.
+\textbf{Speed-up in cycles versus time.} Place-and-route confirms what the 33 vs.\ 31 gate-level depth suggested, and shows it matters more than the gate count implies: on the FPGA the memory read delays dominate, and the Harvard clock is 24\% slower. Separate paths remove a cycle per data access but lengthen every cycle, so the benefit only appears for $f>0.31$.
 
 \textbf{Area similarity is largely a sizing choice.} Both designs instantiate one $256\times32$ array. Harvard gives all of it to data, of which only 112 words are addressable, and puts the program in a constant ROM. Shared splits the array into 128 program words and 112 data words. With different sizes, or with a writable instruction memory, the area comparison would change. The near-equal totals should not be read as ``Harvard costs nothing extra.''
 
@@ -364,9 +393,9 @@ Aadit Vachher & WP5 Verification and results: \sig{tb\_harvard}, \sig{tb\_shared
 
 % ------------------------------------------------------------------
 \section{Conclusion and Future Work}
-We implemented a Harvard-style memory organization and a fair shared-memory baseline in modular, synthesizable Verilog. The two designs differ only in memory organization, and both were verified with 71 directed checks. Cycle counts follow $T_H=N$ and $T_S=N+M$ exactly, giving speed-ups of $1.25\times$ to $1.72\times$ that grow with the fraction of instructions that access data. The cost is a slightly deeper single-cycle path, because an instruction read and a data read are chained. Generic synthesis area is similar for the chosen memory sizes.
+We implemented a Harvard-style memory organization and a fair shared-memory baseline in modular, synthesizable Verilog. The two designs differ only in memory organization, and both were verified with 71 directed checks. Cycle counts follow $T_H=N$ and $T_S=N+M$ exactly, giving speed-ups of $1.25\times$ to $1.72\times$ that grow with the fraction of instructions that access data. The cost is a longer single-cycle path, because an instruction read and a data read are chained. Place-and-route on an ECP5 FPGA measures it: 55.5\,MHz for Harvard against 72.6\,MHz for the baseline. In execution time the Harvard design is $1.32\times$ and $1.29\times$ faster on the memory-heavy programs and $0.96\times$ on the compute-heavy one, so separate instruction and data paths pay off only when more than about 31\% of instructions access data.
 
-Phase~II will turn the cycle result into a time result and widen the evidence: (i)~synchronous-read memories that map to block RAM, used in both designs; (ii)~place-and-route on a chosen FPGA (e.g.\ iCE40 with \texttt{nextpnr}) to measure $f_\text{max}$ and real resource use; (iii)~a program sweep across $f\in[0,1]$, including larger generated kernels; (iv)~multi-cycle memory latency, where separate paths should matter more; (v)~the optional shared lower-level memory behind split instruction/data memories, a modified-Harvard organization; and (vi)~a dual-ported shared memory as a third baseline, to separate the effect of port count from that of separate storage.
+Future work: (i)~synchronous-read memories that map to block RAM in both designs, which require a read-ahead fetch or a pipeline to keep the Harvard design at one cycle per instruction; (ii)~a program sweep across $f\in[0,1]$, including larger generated kernels; (iii)~multi-cycle memory latency, where separate paths should matter more; (iv)~the optional shared lower-level memory behind split instruction/data memories, a modified-Harvard organization; and (v)~a dual-ported shared memory as a third baseline, to separate the effect of port count from that of separate storage.
 
 % ------------------------------------------------------------------
 \begin{thebibliography}{99}

@@ -1,0 +1,7 @@
+# Phase II: FPGA synthesis of the shared design for Lattice ECP5 (open flow).
+# Run from the repository root via: sh synth/run_fpga.sh
+read_verilog rtl/common/pc.v rtl/common/out_reg.v rtl/common/rw_control.v
+read_verilog rtl/shared/shared_decoder.v rtl/shared/shared_mem.v rtl/shared/shared_ctrl.v rtl/shared/shared_top.v
+chparam -set PROGRAM "programs/p2_sum.hex" shared_top
+synth_ecp5 -top shared_top -json synth/reports/shared_ecp5.json
+tee -o synth/reports/shared_ecp5_util.txt stat

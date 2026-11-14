@@ -76,4 +76,4 @@ yosys -s synth/synth_harvard.ys   # optional: generic synthesis cell counts
 ## Status
 
 Phase I complete: RTL, directed tests, cycle comparison, block diagrams, IEEE report and demo video.
-Phase II: synchronous-read memories, FPGA timing (Fmax) on a chosen target, wider program mix.
+Phase II: FPGA place-and-route on a Lattice ECP5-25F done (`sh synth/run_fpga.sh`, details in [docs/phase2_fpga.md](docs/phase2_fpga.md)). Fmax: Harvard 55.5 MHz vs shared 72.6 MHz, so the speed-up in time is 1.32x / 1.29x / 0.96x (P1/P2/P3). Future work: synchronous-read block-RAM memories.

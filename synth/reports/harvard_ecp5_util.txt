@@ -1,0 +1,21 @@
+
+11. Printing statistics.
+
+=== harvard_top ===
+
+   Number of wires:               1608
+   Number of wire bits:           2989
+   Number of public wires:        1608
+   Number of public wire bits:    2989
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1779
+     CCU2C                          24
+     DP16KD                          1
+     L6MUX21                       264
+     LUT4                          917
+     PFUMX                         436
+     TRELLIS_DPR16X4                64
+     TRELLIS_FF                     73
+

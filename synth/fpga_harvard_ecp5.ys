@@ -1,0 +1,7 @@
+# Phase II: FPGA synthesis of the harvard design for Lattice ECP5 (open flow).
+# Run from the repository root via: sh synth/run_fpga.sh
+read_verilog rtl/common/pc.v rtl/common/instr_rom.v rtl/common/data_ram.v rtl/common/out_reg.v rtl/common/rw_control.v
+read_verilog rtl/harvard/harvard_decoder.v rtl/harvard/harvard_ctrl.v rtl/harvard/harvard_top.v
+chparam -set PROGRAM "programs/p2_sum.hex" harvard_top
+synth_ecp5 -top harvard_top -json synth/reports/harvard_ecp5.json
+tee -o synth/reports/harvard_ecp5_util.txt stat
